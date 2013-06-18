@@ -20,7 +20,6 @@ function getTwitterFollowers_(usuario)
   oauthConfig.setConsumerKey(Config.twitterApiConsumerKey);
   oauthConfig.setConsumerSecret(Config.twitterApiConsumerSecret);
   
-  // "twitter" value must match the argument to "addOAuthService" above.
   var options = {
     "oAuthServiceName" : "twitter",
     "oAuthUseToken" : "always"
