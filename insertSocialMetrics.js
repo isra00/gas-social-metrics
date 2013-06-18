@@ -11,7 +11,7 @@ function getFacebookLikes_(sIdSocialGraph)
   return oSocialGraphData["likes"];
 }
 
-function getTwitterFollowers_(usuario)
+function getTwitterFollowers_(twitterUser)
 {  
   var oauthConfig = UrlFetchApp.addOAuthService("twitter");
   oauthConfig.setAccessTokenUrl("http://api.twitter.com/oauth/access_token");
@@ -20,12 +20,13 @@ function getTwitterFollowers_(usuario)
   oauthConfig.setConsumerKey(Config.twitterApiConsumerKey);
   oauthConfig.setConsumerSecret(Config.twitterApiConsumerSecret);
   
+  // "twitter" value must match the argument to "addOAuthService" above.
   var options = {
     "oAuthServiceName" : "twitter",
     "oAuthUseToken" : "always"
   };
   
-  var url = "https://api.twitter.com/1.1/users/show.json?screen_name=JMJ_Rio2013";
+  var url = "https://api.twitter.com/1.1/users/show.json?screen_name=" + twitterUser;
   var response = UrlFetchApp.fetch(url, options);
   var json = JSON.parse(response.getContentText());
   return json["followers_count"];
