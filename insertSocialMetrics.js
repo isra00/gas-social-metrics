@@ -2,7 +2,8 @@ var Config = {
   facebookGraphId: "your FB user or fanpage ID",
   twitterUser: "your twitter user, for example ivianag",
   twitterApiConsumerKey: "your twitter api consumer key",
-  twitterApiConsumerSecret: "your twitter api consumer secret"
+  twitterApiConsumerSecret: "your twitter api consumer secret",
+  spreadsheetId: "the google spreadsheet in which you want to insert data"
 };
 
 function getFacebookLikes_(sIdSocialGraph)
@@ -34,7 +35,8 @@ function getTwitterFollowers_(twitterUser)
 
 function insertSocialMetrics()
 {
-  var oSpreadsheet = SpreadsheetApp.getActiveSpreadsheet(),
+  //var oSpreadsheet = SpreadsheetApp.getActiveSpreadsheet(),
+  var oSpreadsheet = SpreadsheetApp.openById(Config.spreadsheetId),
       oPage = oSpreadsheet.getSheets()[0],
       nFbLikes = getFacebookLikes_(Config.facebookGraphId),
       nTwitterFollowers = getTwitterFollowers_(Config.twitterUser);
