@@ -29,7 +29,10 @@ function getTwitterFollowers_(twitterUser)
   var url = "https://api.twitter.com/1.1/users/show.json?screen_name=" + twitterUser;
   var response = UrlFetchApp.fetch(url, options);
   var json = JSON.parse(response.getContentText());
-  return json["followers_count"];
+  return {
+    followers: json["followers_count"],
+    following: json["friends_count"]
+  };
 }
 
 function insertSocialMetrics()
@@ -37,7 +40,7 @@ function insertSocialMetrics()
   var oSpreadsheet = SpreadsheetApp.openById(Config.spreadsheetId),
       oPage = oSpreadsheet.getSheets()[0],
       nFbLikes = getFacebookLikes_(Config.facebookGraphId),
-      nTwitterFollowers = getTwitterFollowers_(Config.twitterUser);
+      oTwitter = getTwitterFollowers_(Config.twitterUser);
   
-  oPage.appendRow([new Date(), nFbLikes, nTwitterFollowers]);
+  oPage.appendRow([ new Date(), nFbLikes, oTwitter["followers"], oTwitter["following"] ]);
 }
