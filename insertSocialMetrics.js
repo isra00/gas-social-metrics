@@ -21,7 +21,6 @@ function getTwitterFollowers_(twitterUser)
   oauthConfig.setConsumerKey(Config.twitterApiConsumerKey);
   oauthConfig.setConsumerSecret(Config.twitterApiConsumerSecret);
   
-  // "twitter" value must match the argument to "addOAuthService" above.
   var options = {
     "oAuthServiceName" : "twitter",
     "oAuthUseToken" : "always"
@@ -35,7 +34,6 @@ function getTwitterFollowers_(twitterUser)
 
 function insertSocialMetrics()
 {
-  //var oSpreadsheet = SpreadsheetApp.getActiveSpreadsheet(),
   var oSpreadsheet = SpreadsheetApp.openById(Config.spreadsheetId),
       oPage = oSpreadsheet.getSheets()[0],
       nFbLikes = getFacebookLikes_(Config.facebookGraphId),
