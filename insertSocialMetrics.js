@@ -3,6 +3,8 @@ var Config = {
   twitterUser: "your twitter user, for example ivianag",
   twitterApiConsumerKey: "your twitter api consumer key",
   twitterApiConsumerSecret: "your twitter api consumer secret",
+  analyticsAccount: "your Google Analytics account ID",
+  analyticsProperty: "your Google Analytics property ID",
   spreadsheetId: "the google spreadsheet in which you want to insert data"
 };
 
@@ -35,12 +37,47 @@ function getTwitterFollowers_(twitterUser)
   };
 }
 
+function getLastNdays_(nDaysAgo) {
+  var today = new Date(), 
+      before = new Date();
+  before.setDate(today.getDate() - nDaysAgo);
+  return Utilities.formatDate(before, 'GMT', 'yyyy-MM-dd');
+}
+
+function getAnalyticsForDay_() {
+
+  var profileId = Analytics.Management.Profiles.list(Config.analyticsAccount, Config.analyticsProperty).getItems()[0].getId(),
+      tableId = 'ga:' + profileId,
+      startDate = getLastNdays_(1),
+      endDate = getLastNdays_(1),
+      results = Analytics.Data.Ga.get(tableId, startDate, endDate, 'ga:visits,ga:pageviews'),
+      output = {
+        "visits": "?",
+        "pageviews": "?"
+      };
+
+  if (results.getRows())
+  {
+    output = {
+      "visits": results.getRows()[0][0],
+      "pageviews": results.getRows()[0][1]
+    }
+  }
+
+  return output;
+}
+
 function insertSocialMetrics()
 {
   var oSpreadsheet = SpreadsheetApp.openById(Config.spreadsheetId),
       oPage = oSpreadsheet.getSheets()[0],
+      oYesterday,
       nFbLikes = getFacebookLikes_(Config.facebookGraphId),
-      oTwitter = getTwitterFollowers_(Config.twitterUser);
+      oTwitter = getTwitterFollowers_(Config.twitterUser),
+      oAnalytics = getAnalyticsForDay_();
   
-  oPage.appendRow([ new Date(), nFbLikes, oTwitter["followers"], oTwitter["following"] ]);
+  oYesterday = new Date();
+  oYesterday.setDate(oYesterday.getDate() - 1);
+  
+  oPage.appendRow([ oYesterday, nFbLikes, oTwitter["followers"], oTwitter["following"], oAnalytics["visits"], oAnalytics["pageviews"] ]);
 }
